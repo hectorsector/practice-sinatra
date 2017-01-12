@@ -11,22 +11,25 @@ class Collaborator
       client.issue_comments(repo_name, issue_num).each do |comment|
         username = comment[:user][:login]
         puts "adding #{username}"
-        next if current_collaborators[username] # skip adding if already a collaborator
-        if pending_users = client.team_membership( team_num, username)
-          puts "#{username} is a pending user."
-        elsif user_added = client.add_team_membership(team_num, username, options = {role: 'member'})
-          #add_collaborator(repo_name, username)
-          puts "added #{username}"
-          successfully_added_users << username
-        else
-          puts "Failed to add #{username} as a collaborator (check: is githubteacher repository owner?)"
+        begin
+          pending_users = client.team_membership( team_num, username)
+          puts "This user is already pending"
+        rescue Octokit::NotFound
+          next if current_collaborators[username] # skip adding if already a collaborator
+          if user_added = client.add_team_membership(team_num, username, options = {role: 'member'})
+            #add_collaborator(repo_name, username)
+            puts "added #{username}"
+            successfully_added_users << username
+          else
+            puts "Failed to add #{username} as a collaborator (check: is githubteacher repository owner?)"
+          end # ends if chain
         end
-      end
+      end # ends loop
     rescue Octokit::NotFound
       abort "[404] - Repository not found:\nIf #{repo_name || "nil"} is correct, are you using the right Auth token?"
     rescue Octokit::UnprocessableEntity
       abort "[422] - Unprocessable Entity:\nAre you trying to add collaborators to an org-level repository?"
-    end
+    end #ends block
 
     if successfully_added_users.any?
       begin
