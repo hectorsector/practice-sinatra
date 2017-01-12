@@ -12,9 +12,10 @@ class Collaborator
         username = comment[:user][:login]
         puts "adding #{username}"
         next if current_collaborators[username] # skip adding if already a collaborator
-        if user_added = client.add_team_member( team_num, username)
+        next if client.add_team_membership(team_num, username, options={role: 'member'})["state"] == "pending"
+        if user_added = client.add_team_membership(team_num, username, options={role: 'member'})
           puts "added #{username}"
-          successfully_added_users<< username
+          successfully_added_users << username
         else
           puts "Failed to add #{username} as a collaborator (check: is githubteacher repository owner?)"
         end # ends if chain
