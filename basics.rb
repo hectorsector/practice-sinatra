@@ -9,8 +9,7 @@ post '/payload' do
   push = JSON.parse(request.body.read)
   puts "I got some JSON: #{push.inspect}"
   jsontest = "I got some JSON: #{push.inspect}"
-  #Collaborator.add repo_name: "cop1000/201720", issue_num: 1, team_num: "2233396"
-  Collaborator.add repo_name: "cop1000/scratch", issue_num: 4, team_num: "2233396"
+  Collaborator.add repo_name: "cop1000/201720", issue_num: 1, team_num: "2233396"
 end
 
 get '/' do
