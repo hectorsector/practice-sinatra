@@ -11,20 +11,13 @@ class Collaborator
       client.issue_comments(repo_name, issue_num).each do |comment|
         username = comment[:user][:login]
         puts "adding #{username}"
-        begin
-          next if current_collaborators[username] # skip adding if already a collaborator
-          if client.team_membership( team_num, username)
-            puts "already added"
-          elsif user_added = client.add_team_membership(team_num, username, options = {role: 'member'})
-            #add_collaborator(repo_name, username)
-            puts "added #{username}"
-            successfully_added_users << username
-          else
-            puts "Failed to add #{username} as a collaborator (check: is githubteacher repository owner?)"
-          end # ends if chain
-        rescue Octokit::NotFound
-          puts "already pending"  
-        end
+        next if current_collaborators[username] # skip adding if already a collaborator
+        if user_added = client.add_team_member( team_num, username)
+          puts "added #{username}"
+          successfully_added_users<< username
+        else
+          puts "Failed to add #{username} as a collaborator (check: is githubteacher repository owner?)"
+        end # ends if chain
       end # ends loop
     rescue Octokit::NotFound
       abort "[404] - Repository not found:\nIf #{repo_name || "nil"} is correct, are you using the right Auth token?"
