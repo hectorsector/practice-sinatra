@@ -14,9 +14,7 @@ class Collaborator
         puts "adding #{username}"
         next if current_collaborators[username] # skip adding if already a collaborator
         begin
-          client.team_membership(team_num, username)
-          userPending = true
-          puts "user is already pending"
+        next if client.team_membership(team_num, username)
         rescue Octokit::NotFound
           puts "do nothing, add the user"
         end
