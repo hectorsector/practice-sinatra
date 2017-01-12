@@ -3,7 +3,7 @@ require 'octokit'
 Octokit.auto_paginate = true
 
 class Collaborator
-  def self.add(repo_name:, issue_num:)
+  def self.add(repo_name:, issue_num:, team_num:)
     # Get Issue Commenters and Add as Collaborators
     successfully_added_users = []
     current_collaborators = get_current_collaborators(repo_name)
@@ -54,7 +54,7 @@ class Collaborator
   end
 
   def self.access_token
-    ENV['POSTER_TOKEN'] || raise("You need a GitHub Teacher access token")
+    ENV['POSTER_TOKEN'] || raise("You need an access token")
   end
 
   def self.client
