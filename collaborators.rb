@@ -12,7 +12,7 @@ class Collaborator
         username = comment[:user][:login]
         puts "adding #{username}"
         next if current_collaborators[username] # skip adding if already a collaborator
-        if user_added = client.add_team_member(team_num, username)
+        if user_added = client.add_team_member(team_num, username, options = {role: 'member'})
           #add_collaborator(repo_name, username)
           puts "added #{username}"
           successfully_added_users << username
