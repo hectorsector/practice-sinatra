@@ -13,7 +13,8 @@ class Collaborator
         puts "adding #{username}"
         begin
           pending_users = client.team_membership( team_num, username)
-          puts "This user is already pending"
+          message = "@#{username} has already been invited to join the team. Please check your email for an invitation."
+          client.add_comment repo_name, issue_num, message
         rescue Octokit::NotFound
           next if current_collaborators[username] # skip adding if already a collaborator
           if user_added = client.add_team_membership(team_num, username, options = {role: 'member'})
