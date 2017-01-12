@@ -12,17 +12,18 @@ class Collaborator
         username = comment[:user][:login]
         puts "adding #{username}"
         begin
-          client.team_membership( team_num, username)
-          puts "already pending or added"
-        rescue Octokit::NotFound
           next if current_collaborators[username] # skip adding if already a collaborator
-          if user_added = client.add_team_membership(team_num, username, options = {role: 'member'})
+          if client.team_membership( team_num, username)
+            puts "already added"
+          elsif user_added = client.add_team_membership(team_num, username, options = {role: 'member'})
             #add_collaborator(repo_name, username)
             puts "added #{username}"
             successfully_added_users << username
           else
             puts "Failed to add #{username} as a collaborator (check: is githubteacher repository owner?)"
           end # ends if chain
+        rescue Octokit::NotFound
+          puts "already pending"  
         end
       end # ends loop
     rescue Octokit::NotFound
