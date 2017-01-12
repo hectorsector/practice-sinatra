@@ -12,16 +12,15 @@ class Collaborator
         userPending = false
         username = comment[:user][:login]
         puts "adding #{username}"
+        next if current_collaborators[username] # skip adding if already a collaborator
         begin
           client.team_membership(team_num, username)
           userPending = true
-        rescue Octokit::NotFound
-          userPending = false
-        end
-        next if current_collaborators[username] # skip adding if already a collaborator
-        if userPending
           puts "user is already pending"
-        elsif user_added = client.add_team_membership(team_num, username, options={role: 'member'})
+        rescue Octokit::NotFound
+          puts "do nothing, add the user"
+        end
+        if user_added = client.add_team_membership(team_num, username, options={role: 'member'})
           puts "added #{username}"
           successfully_added_users << username
         else
