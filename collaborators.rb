@@ -12,11 +12,7 @@ class Collaborator
         username = comment[:user][:login]
         puts "adding #{username}"
         next if current_collaborators[username] # skip adding if already a collaborator
-        if team_membership( team_num, username)
-          message = "You've already been invited to join the team. Please check your email to accept the invitation."
-          client.add_comment repo_name, issue_num, message
-        rescue => e
-          abort "ERR posting comment (#{e.inspect})"
+        next if team_membership( team_num, username)
         if user_added = client.add_team_membership(team_num, username, options = {role: 'member'})
           #add_collaborator(repo_name, username)
           puts "added #{username}"
