@@ -17,9 +17,10 @@ class Collaborator
         rescue Octokit::NotFound
           userPending = true
         end
-        next if userPending
         next if current_collaborators[username] # skip adding if already a collaborator
-        if user_added = client.add_team_membership(team_num, username, options={role: 'member'})
+        if userPending
+          puts "user is already pending"
+        elsif user_added = client.add_team_membership(team_num, username, options={role: 'member'})
           puts "added #{username}"
           successfully_added_users << username
         else
