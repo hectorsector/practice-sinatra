@@ -6,6 +6,7 @@ class Collaborator
   def self.add(repo_name:, issue_num:, team_num:)
     # Get Issue Commenters and Add as Collaborators
     successfully_added_users = []
+    pending_users = []
     current_collaborators = get_current_collaborators(repo_name)
     begin
       client.issue_comments(repo_name, issue_num).each do |comment|
@@ -13,7 +14,7 @@ class Collaborator
         puts "adding #{username}"
         begin
           pending_users = client.team_membership( team_num, username)
-          puts "This user is already pending"
+          pending_users << username
         rescue Octokit::NotFound
           next if current_collaborators[username] # skip adding if already a collaborator
           if user_added = client.add_team_membership(team_num, username, options = {role: 'member'})
@@ -53,6 +54,12 @@ class Collaborator
 
         message = ":tada: #{names} #{verb} now #{num} repository #{noun}. :balloon:"
         client.add_comment repo_name, issue_num, message
+
+        if pending_users
+          message = "The following users have already been invited, but have not yet accepted their invitation, please go check your email: #{pending_users}"
+          client.add_comment repo_name, issue_num, message
+        end
+
       rescue => e
         abort "ERR posting comment (#{e.inspect})"
       end
