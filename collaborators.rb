@@ -54,7 +54,7 @@ class Collaborator
   end
 
   def self.access_token
-    ENV['GITHUBTEACHER_TOKEN'] || raise("You need a GitHub Teacher access token")
+    ENV['POSTER_TOKEN'] || raise("You need an access token")
   end
 
   def self.client
