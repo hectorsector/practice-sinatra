@@ -9,8 +9,7 @@ post '/payload' do
   push = JSON.parse(request.body.read)
   puts "I got some JSON: #{push.inspect}"
   jsontest = "I got some JSON: #{push.inspect}"
-  Collaborator.add repo_name: "githubschool/open-enrollment-classes-introduction-to-github", issue_num: 927
-  Collaborator.add repo_name: "githubschool/on-demand-github-pages", issue_num: 1
+  Collaborator.add repo_name: "cop1000/201720", issue_num: 1
 end
 
 get '/' do
