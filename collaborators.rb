@@ -36,12 +36,12 @@ class Collaborator
         names = "@#{successfully_added_users.first}"
         verb  = "is"
         num   = "a"
-        noun  = "collaborator"
+        noun  = "member"
 
         if successfully_added_users.size > 1
           verb  = "are"
           num   = ""
-          noun  = "collaborators"
+          noun  = "members"
 
           if successfully_added_users.size == 2
             names = "@#{successfully_added_users.first} and @#{successfully_added_users.last}"
@@ -51,7 +51,7 @@ class Collaborator
           end
         end
 
-        message = ":tada: #{names} #{verb} now #{num} repository #{noun}. :balloon:"
+        message = ":tada: #{names} #{verb} now #{num} team #{noun}. :balloon: Please [accept the invitation](https://github.com/orgs/cop1000/invitation) or use the link in your email."
         client.add_comment repo_name, issue_num, message
       rescue => e
         abort "ERR posting comment (#{e.inspect})"
