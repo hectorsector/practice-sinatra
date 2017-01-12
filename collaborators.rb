@@ -7,12 +7,18 @@ class Collaborator
     # Get Issue Commenters and Add as Collaborators
     successfully_added_users = []
     current_collaborators = get_current_collaborators(repo_name)
+    userPending = false
     begin
       client.issue_comments(repo_name, issue_num).each do |comment|
         username = comment[:user][:login]
         puts "adding #{username}"
+        begin
+          client.team_membership(team_num, username)
+        rescue Octokit::NotFound
+          userPending = true
+        end
+        next if userPending
         next if current_collaborators[username] # skip adding if already a collaborator
-        next if client.team_membership(team_num, username)
         if user_added = client.add_team_membership(team_num, username, options={role: 'member'})
           puts "added #{username}"
           successfully_added_users << username
